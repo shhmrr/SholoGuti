@@ -361,7 +361,7 @@ class SixteenGuti_OneVOnePage(tk.Frame):
         self.redguti = [] #holds information about the red guti image. a 2d array.
         self.greenguti = [] #holds information about the green guti image. a 2d array.
         self.redguti,self.greenguti= Drawing16GutiBoardRedBluePlayers(canvas,self.canvasWidth,self.canvasHeight,self.boardArray,self.redGuti,self.greenGuti)
-
+        self.currentPlayer = 2 ##current player is Red
         print(self.redguti)
         print(self.greenguti)
         self.x = 0
@@ -393,11 +393,18 @@ class SixteenGuti_OneVOnePage(tk.Frame):
             # print(possible_i,possible_j)
 
             #moving a red guti
-            if self.boardArray[self.starting_i][self.starting_j] == 2:
+            if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
                 new_x = int(possible_j * (self.canvasWidth)/4)
                 new_y = int(possible_i * (self.canvasHeight) / 8)
                 canvas.delete(self.redguti[self.starting_i][self.starting_j])
                 self.redguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y, image=self.redGuti)
+
+            # moving a green guti
+            if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
+                new_x = int(possible_j * (self.canvasWidth)/4)
+                new_y = int(possible_i * (self.canvasHeight) / 8)
+                canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y, image=self.greenGuti)
 
         def moveReleased(event):
             old_x = int(self.starting_j * (self.canvasWidth) / 4)
@@ -409,16 +416,33 @@ class SixteenGuti_OneVOnePage(tk.Frame):
             self.distInSqr = distanceInSquare(self.starting_j,self.starting_i,self.released_j,self.released_i)
 
             # moving a red guti
-            if self.boardArray[self.starting_i][self.starting_j] == 2:
+            if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
 
-                if isValid16GutiMove(self.starting_j,self.starting_i,self.released_j,self.released_i,self.distInSqr,self.boardArray,2):
+                if isValid16GutiMove(self.starting_j,self.starting_i,self.released_j,self.released_i,self.distInSqr,self.boardArray,self.currentPlayer):
                     canvas.delete(self.redguti[self.starting_i][self.starting_j])
                     self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,image=self.redGuti)
                     self.boardArray[self.starting_i][self.starting_j] = 0
                     self.boardArray[self.released_i][self.released_j] = 2
+                    self.currentPlayer = 1#player now green
                 else:
                     canvas.delete(self.redguti[self.starting_i][self.starting_j])
                     self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y, image=self.redGuti)
+
+            # moving a green guti
+            if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
+
+                if isValid16GutiMove(self.starting_j, self.starting_i, self.released_j, self.released_i,
+                                     self.distInSqr, self.boardArray, self.currentPlayer):
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                         image=self.greenGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 1
+                    self.currentPlayer = 2  # player now red
+                else:
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y,
+                                                                                         image=self.greenGuti)
 
 
             self.gate = 0
