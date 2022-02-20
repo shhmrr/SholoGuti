@@ -123,6 +123,7 @@ def FillingArray16GutiBoard():
     #red = 2
     #green = 1
     #blank = 0
+    #invalid = -1
     #spaces in the board or not a move for the coin = -1 the board is not entirely a square
 
     arr = []
@@ -330,9 +331,44 @@ def isValid16GutiMove(starting_j, starting_i, released_j, released_i,distInSqr,b
 
     #current player is red
     if currentPlayer == 2:
-        print("Red Move")
+        print("Red Player")
+
+        if distInSqr == 1 and boardArr[released_i][released_j] == 0: #moving one step horizontally or vertically and no coin on the place
+            return 1 #1 is valid
+
+        if distInSqr == 4: #moving two steps horizontally or vertically
+            middle_i = int((starting_i + released_i)/2)
+            middle_j = int((starting_j + released_j) / 2)
+            if boardArr[middle_i][middle_j] == 1 and boardArr[released_i][released_j] == 0: #the middle position has an opponent coin i.e green
+                return 2 #2 is valid and an opponent coin got eaten
+
+        valid_diagonal_arr = [[0, 2], [2, 2], [4, 2], [1, 3], [3, 3], [0, 4], [2, 4], [4, 4], [1, 5], [3, 5], [0, 6],
+                              [2, 6], [4, 6], [0, 0], [1, 1], [4, 0], [3, 1], [0, 8], [1, 7], [4, 8], [3, 7]]
+        if distInSqr == 2: #moving one step diagonally
+            #there are 12 valid points for diagonal movements
+            for i in range(len(valid_diagonal_arr)):
+                if starting_j == valid_diagonal_arr[i][0] and starting_i == valid_diagonal_arr[i][1] and boardArr[released_i][released_j] == 0:
+                    return 1#valid one step diagonal movement
+
+
+        if distInSqr == 8: #moving two steps diagonally
+            middle_i = int((starting_i + released_i) / 2)
+            middle_j = int((starting_j + released_j) / 2)
+            # there are 12 valid points for diagonal movements
+            for i in range(len(valid_diagonal_arr)):
+                if starting_j == valid_diagonal_arr[i][0] and starting_i == valid_diagonal_arr[i][1] and boardArr[released_i][released_j] == 0:
+                    if boardArr[middle_i][middle_j] == 1:  # the middle position has an opponent coin i.e green
+                        return 2  # 2 is valid and an opponent coin got eaten
+
+
+
+    #current player is green
+    if currentPlayer == 1:
+        return 1#valid
+        print("Green Player")
+
         #unfinished code
-    return 1
+
 
 class SixteenGuti_OneVOnePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -415,6 +451,7 @@ class SixteenGuti_OneVOnePage(tk.Frame):
             #distance between initial and released posiiton
             self.distInSqr = distanceInSquare(self.starting_j,self.starting_i,self.released_j,self.released_i)
 
+            ## currentPlayer 1 is Green and 2 is Red
             # moving a red guti
             if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
 
