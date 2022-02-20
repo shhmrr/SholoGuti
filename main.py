@@ -157,6 +157,183 @@ def Drawing16GutiBoardRedBluePlayers(canvas,canvasWidth,canvasHeight,arr,redGuti
     return redguti,greenguti
 
 
+def distanceInSquare(starting_j, starting_i, released_j, released_i):
+    #x0,y0,x1,y1
+    distInSqr = (starting_j - released_j)*(starting_j - released_j) + (starting_i - released_i)*(starting_i - released_i)
+    return distInSqr
+def isValid16GutiMove(starting_j, starting_i, released_j, released_i,distInSqr,boardArr,currentPlayer):
+
+    #invalid moves on upper triangle
+    if released_j == 1 and released_i == 0:
+        return 0
+    if released_j == 3 and released_i == 0:
+        return 0
+    if released_j == 0 and released_i == 1:
+        return 0
+    if released_j == 4 and released_i == 1:
+        return 0
+    # invalid moves on lower triangle
+    if released_j == 1 and released_i == 8:
+        return 0
+    if released_j == 3 and released_i == 8:
+        return 0
+    if released_j == 0 and released_i == 7:
+        return 0
+    if released_j == 4 and released_i == 7:
+        return 0
+    #invalid two step moves with space in the middle on upper side
+    if starting_j == 0and starting_i == 0and released_j == 0 and released_i ==  2:
+        return 0
+    if starting_j == 0and starting_i == 2and released_j == 0 and released_i ==  0:
+        return 0
+    if starting_j == 4and starting_i == 0and released_j == 4 and released_i ==  2:
+        return 0
+    if starting_j == 4and starting_i == 2and released_j == 4 and released_i ==  0:
+        return 0
+
+    if starting_j == 1 and starting_i == 1 and released_j == 1 and released_i == 3:
+        return 0
+    if starting_j == 1 and starting_i == 3 and released_j == 1 and released_i == 1:
+        return 0
+    if starting_j == 3 and starting_i == 1 and released_j == 3 and released_i == 3:
+        return 0
+    if starting_j == 3 and starting_i == 3 and released_j == 3 and released_i == 1:
+        return 0
+
+    if starting_j == 1 and starting_i == 1 and released_j == 1 and released_i == 2:
+        return 0
+    if starting_j == 1 and starting_i == 2 and released_j == 1 and released_i == 1:
+        return 0
+    if starting_j == 3 and starting_i == 1 and released_j == 3 and released_i == 2:
+        return 0
+    if starting_j == 3 and starting_i == 2 and released_j == 3 and released_i == 1:
+        return 0
+
+    if starting_j == 1 and starting_i == 1 and released_j == 0 and released_i == 2:
+        return 0
+    if starting_j == 0 and starting_i == 2 and released_j == 1 and released_i == 1:
+        return 0
+    if starting_j == 3 and starting_i == 1 and released_j == 4 and released_i == 2:
+        return 0
+    if starting_j == 4 and starting_i == 2 and released_j == 3 and released_i == 1:
+        return 0
+
+    if starting_j == 2 and starting_i == 0 and released_j == 0 and released_i == 2:
+        return 0
+    if starting_j == 0 and starting_i == 2 and released_j == 2 and released_i == 0:
+        return 0
+    if starting_j == 2 and starting_i == 0 and released_j == 4 and released_i == 2:
+        return 0
+    if starting_j == 4 and starting_i == 2 and released_j == 2 and released_i == 0:
+        return 0
+
+    if starting_j == 2 and starting_i == 1 and released_j == 1 and released_i == 2:
+        return 0
+    if starting_j == 1 and starting_i == 2 and released_j == 2 and released_i == 1:
+        return 0
+    if starting_j == 2 and starting_i == 1 and released_j == 3 and released_i == 2:
+        return 0
+    if starting_j == 3 and starting_i == 2 and released_j == 2 and released_i == 1:
+        return 0
+
+    if starting_j == 2 and starting_i == 1 and released_j == 0 and released_i == 3:
+        return 0
+    if starting_j == 0 and starting_i == 3 and released_j == 2 and released_i == 1:
+        return 0
+    if starting_j == 2 and starting_i == 1 and released_j == 4 and released_i == 3:
+        return 0
+    if starting_j == 4 and starting_i == 3 and released_j == 2 and released_i == 1:
+        return 0
+
+    if starting_j == 2 and starting_i == 0 and released_j == 1 and released_i == 1:
+        return 0
+    if starting_j == 1 and starting_i == 1 and released_j == 2 and released_i == 0:
+        return 0
+    if starting_j == 2 and starting_i == 0 and released_j == 3 and released_i == 1:
+        return 0
+    if starting_j == 3 and starting_i == 1 and released_j == 2 and released_i == 0:
+        return 0
+
+
+    # invalid two step moves with space in the middle on lower side
+    if starting_j == 0and starting_i == 6and released_j == 0 and released_i ==  8:
+        return 0
+    if starting_j == 0and starting_i == 8and released_j == 0 and released_i ==  6:
+        return 0
+    if starting_j == 4and starting_i == 6and released_j == 4 and released_i ==  8:
+        return 0
+    if starting_j == 4and starting_i == 8and released_j == 4 and released_i ==  6:
+        return 0
+
+    if starting_j == 1and starting_i == 6and released_j == 1 and released_i ==  7:
+        return 0
+    if starting_j == 1and starting_i == 7and released_j == 1 and released_i ==  6:
+        return 0
+    if starting_j == 3and starting_i == 6and released_j == 3 and released_i ==  7:
+        return 0
+    if starting_j == 3and starting_i == 7and released_j ==  3and released_i ==  6:
+        return 0
+
+    if starting_j == 1and starting_i == 5and released_j == 1 and released_i ==  7:
+        return 0
+    if starting_j == 1and starting_i == 7and released_j == 1 and released_i ==  5:
+        return 0
+    if starting_j == 3and starting_i == 5and released_j == 3 and released_i ==  7:
+        return 0
+    if starting_j == 3and starting_i == 7and released_j ==  3and released_i ==  5:
+        return 0
+
+    if starting_j == 2and starting_i == 8and released_j == 1 and released_i ==  7:
+        return 0
+    if starting_j == 1and starting_i == 7and released_j == 2 and released_i ==  8:
+        return 0
+    if starting_j == 2and starting_i == 8and released_j == 3 and released_i ==  7:
+        return 0
+    if starting_j == 3and starting_i == 7and released_j ==  2and released_i ==  8:
+        return 0
+
+    if starting_j == 2and starting_i == 8and released_j == 0 and released_i ==  6:
+        return 0
+    if starting_j == 0and starting_i == 6and released_j == 2 and released_i ==  8:
+        return 0
+    if starting_j == 2and starting_i == 8and released_j == 4 and released_i ==  6:
+        return 0
+    if starting_j == 4and starting_i == 6and released_j ==  2and released_i ==  8:
+        return 0
+
+    if starting_j == 0and starting_i == 6and released_j == 1 and released_i ==  7:
+        return 0
+    if starting_j == 1and starting_i == 7and released_j == 0 and released_i ==  6:
+        return 0
+    if starting_j == 4and starting_i == 6and released_j == 3 and released_i ==  7:
+        return 0
+    if starting_j == 3and starting_i == 7and released_j ==  4and released_i ==  6:
+        return 0
+
+    if starting_j == 1 and starting_i == 6 and released_j == 2 and released_i == 7:
+        return 0
+    if starting_j == 2 and starting_i == 7 and released_j == 1 and released_i == 6:
+        return 0
+    if starting_j == 3 and starting_i == 6 and released_j == 2 and released_i == 7:
+        return 0
+    if starting_j == 2 and starting_i == 7 and released_j == 3 and released_i == 6:
+        return 0
+
+    if starting_j == 0 and starting_i == 5 and released_j == 2 and released_i == 7:
+        return 0
+    if starting_j == 2 and starting_i == 7 and released_j == 0 and released_i == 5:
+        return 0
+    if starting_j == 4 and starting_i == 5 and released_j == 2 and released_i == 7:
+        return 0
+    if starting_j == 2 and starting_i == 7 and released_j == 4 and released_i == 5:
+        return 0
+
+    #current player is red
+    if currentPlayer == 2:
+        print("Red Move")
+        #unfinished code
+    return 1
+
 class SixteenGuti_OneVOnePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -212,8 +389,8 @@ class SixteenGuti_OneVOnePage(tk.Frame):
                 self.released_i = possible_i
                 self.released_j = possible_j
 
-            print(self.starting_i,self.starting_j)
-            print(possible_i,possible_j)
+            # print(self.starting_i,self.starting_j)
+            # print(possible_i,possible_j)
 
             #moving a red guti
             if self.boardArray[self.starting_i][self.starting_j] == 2:
@@ -223,14 +400,25 @@ class SixteenGuti_OneVOnePage(tk.Frame):
                 self.redguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y, image=self.redGuti)
 
         def moveReleased(event):
+            old_x = int(self.starting_j * (self.canvasWidth) / 4)
+            old_y = int(self.starting_i * (self.canvasHeight) / 8)
             new_x = int(self.released_j * (self.canvasWidth) / 4)
             new_y = int(self.released_i * (self.canvasHeight) / 8)
+
+            #distance between initial and released posiiton
+            self.distInSqr = distanceInSquare(self.starting_j,self.starting_i,self.released_j,self.released_i)
+
             # moving a red guti
             if self.boardArray[self.starting_i][self.starting_j] == 2:
-                canvas.delete(self.redguti[self.starting_i][self.starting_j])
-                self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,image=self.redGuti)
-                self.boardArray[self.starting_i][self.starting_j] = 0
-                self.boardArray[self.released_i][self.released_j] = 2
+
+                if isValid16GutiMove(self.starting_j,self.starting_i,self.released_j,self.released_i,self.distInSqr,self.boardArray,2):
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,image=self.redGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 2
+                else:
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y, image=self.redGuti)
 
 
             self.gate = 0
