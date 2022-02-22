@@ -85,38 +85,40 @@ class SixteenGutiPage(tk.Frame):
         buttonMenu.place(relx=0.5, rely=0.65, anchor="center")
 
 def Drawing16GutiBoard(canvas,canvasWidth,canvasHeight):
-    w = canvasWidth
-    h = canvasHeight
+    w = canvasWidth - 50
+    h = canvasHeight - 50
+    x_shift = 25
+    y_shift = 25
     ##horizontal lines
-    canvas.create_line(0,   0,   w,   0,   fill='black', width=3)
-    canvas.create_line(w/4,   h/8, 3*w/4,   h/8, fill='black', width=3)
-    canvas.create_line(0, 2*h/8, w, 2*h/8, fill='black', width=3)
-    canvas.create_line(0, 3*h/8, w, 3*h/8, fill='black', width=3)
-    canvas.create_line(0, 4*h/8, w, 4*h/8, fill='black', width=3)
-    canvas.create_line(0, 5*h/8, w, 5*h/8, fill='black', width=3)
-    canvas.create_line(0, 6*h/8, w, 6*h/8, fill='black', width=3)
-    canvas.create_line(w/4, 7*h/8, 3*w/4, 7*h/8, fill='black', width=3)
-    canvas.create_line(0,   h,   w,   h,   fill='black', width=3)
+    canvas.create_line(0 + x_shift,   0 + y_shift,   w + x_shift,   0 + y_shift,   fill='black', width=3)
+    canvas.create_line(w/4 + x_shift,   h/8 + y_shift, 3*w/4 + x_shift,   h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 2*h/8 + y_shift, w + x_shift, 2*h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 3*h/8 + y_shift, w + x_shift, 3*h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 4*h/8 + y_shift, w + x_shift, 4*h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 5*h/8 + y_shift, w + x_shift, 5*h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 6*h/8 + y_shift, w + x_shift, 6*h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(w/4 + x_shift, 7*h/8 + y_shift, 3*w/4+ x_shift, 7*h/8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift,   h + y_shift,   w+ x_shift,   h + y_shift,   fill='black', width=3)
     ##vertical lines
-    canvas.create_line(0, 2 * h / 8, 0, 6 * h / 8, fill='black', width=3)
-    canvas.create_line(w/4, 2 * h / 8, w/4, 6 * h / 8, fill='black', width=3)
-    canvas.create_line(2*w/4, 0, 2*w/4, h , fill='black', width=3)
-    canvas.create_line(3*w/4, 2 * h / 8, 3*w/4, 6 * h / 8, fill='black', width=3)
-    canvas.create_line(w, 2 * h / 8, w, 6 * h / 8, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 2 * h / 8 + y_shift, 0 + x_shift, 6 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(w/4 + x_shift, 2 * h / 8 + y_shift, w/4 + x_shift, 6 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(2*w/4 + x_shift, 0 + y_shift, 2*w/4 + x_shift, h + y_shift, fill='black', width=3)
+    canvas.create_line(3*w/4 + x_shift, 2 * h / 8 + y_shift, 3*w/4 + x_shift, 6 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(w + x_shift, 2 * h / 8 + y_shift, w + x_shift, 6 * h / 8+ y_shift, fill='black', width=3)
     ##Diagonals top and bottom
-    canvas.create_line(0, 0, 2*w/4, 2*h/8, fill='black', width=3)
-    canvas.create_line(w, 0, 2 * w / 4, 2 * h / 8, fill='black', width=3)
-    canvas.create_line(0, h, 2*w/4, 6*h/8, fill='black', width=3)
-    canvas.create_line(w, h, 2*w/4,6*h/8, fill='black', width=3)
+    canvas.create_line(0+ x_shift, 0+ y_shift, 2*w/4+ x_shift, 2*h/8+ y_shift, fill='black', width=3)
+    canvas.create_line(w+ x_shift, 0+ y_shift, 2 * w / 4+ x_shift, 2 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(0+ x_shift, h+ y_shift, 2*w/4+ x_shift, 6*h/8+ y_shift, fill='black', width=3)
+    canvas.create_line(w+ x_shift, h+ y_shift, 2*w/4+ x_shift,6*h/8+ y_shift, fill='black', width=3)
     ##Diagonals in the middle
     #up-left to bottom-right
-    canvas.create_line(0, 2*h/8, w , 6 * h / 8, fill='black', width=3)
-    canvas.create_line(2*w/4, 2 * h / 8, w, 4 * h / 8, fill='black', width=3)
-    canvas.create_line(0, 4 * h / 8, 2*w/4, 6 * h / 8, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 2*h/8+ y_shift, w + x_shift, 6 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(2*w/4 + x_shift, 2 * h / 8+ y_shift, w+ x_shift, 4 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 4 * h / 8+ y_shift, 2*w/4+ x_shift, 6 * h / 8+ y_shift, fill='black', width=3)
     ##bottom-left to up-right
-    canvas.create_line(0, 4 * h / 8, 2*w/4, 2 * h / 8, fill='black', width=3)
-    canvas.create_line(0, 6 * h / 8, w, 2 * h / 8, fill='black', width=3)
-    canvas.create_line(2*w/4, 6 * h / 8, w, 4 * h / 8, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 4 * h / 8+ y_shift, 2*w/4 + x_shift, 2 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 6 * h / 8+ y_shift, w + x_shift, 2 * h / 8+ y_shift, fill='black', width=3)
+    canvas.create_line(2*w/4 + x_shift, 6 * h / 8+ y_shift, w + x_shift, 4 * h / 8+ y_shift, fill='black', width=3)
 
 def FillingArray16GutiBoard():
     #the 16guti game is played in a 9 by 5 board. row = 9 col = 5
@@ -138,6 +140,11 @@ def FillingArray16GutiBoard():
     arr.append([2,-1,2,-1,2])
     return arr
 def Drawing16GutiBoardRedBluePlayers(canvas,canvasWidth,canvasHeight,arr,redGuti,blueGuti):
+    canvasWidth = canvasWidth - 50
+    canvasHeight = canvasHeight - 50
+    x_shift = 25
+    y_shift = 25
+
     redguti = []
     greenguti = []
     for i in range(9):
@@ -150,10 +157,10 @@ def Drawing16GutiBoardRedBluePlayers(canvas,canvasWidth,canvasHeight,arr,redGuti
     for i in range(9):
         for j in range(5):
             if arr[i][j] == 1:
-                greenguti1 = canvas.create_image(j * canvasWidth / 4, i * canvasHeight / 8, image=blueGuti)
+                greenguti1 = canvas.create_image(j * canvasWidth / 4 + x_shift, i * canvasHeight / 8 + y_shift, image=blueGuti)
                 greenguti[i][j] = greenguti1
             if arr[i][j] == 2:
-                redguti1 = canvas.create_image(j * canvasWidth / 4, i * canvasHeight / 8, image=redGuti)
+                redguti1 = canvas.create_image(j * canvasWidth / 4 + x_shift, i * canvasHeight / 8 + y_shift, image=redGuti)
                 redguti[i][j] = redguti1
     return redguti,greenguti
 
@@ -408,12 +415,14 @@ class SixteenGuti_OneVOnePage(tk.Frame):
         self.released_i = 0
         self.released_j = 0
         self.gate = 0
+        self.x_shift = 25 #same shift applied in the drawing function
+        self.y_shift = 25
         def moveGuti(event):
             self.x = int(event.x)
             self.y = int(event.y)
 
-            possible_j = (self.x * 4)/self.canvasWidth
-            possible_i = (self.y * 8) / self.canvasHeight
+            possible_j = ((self.x - self.x_shift) * 4)/(self.canvasWidth - 2*self.x_shift)
+            possible_i = ((self.y - self.y_shift) * 8) /(self.canvasHeight - 2*self.y_shift)
 
             possible_i = round(possible_i)
             possible_j = round(possible_j)
@@ -430,8 +439,8 @@ class SixteenGuti_OneVOnePage(tk.Frame):
 
             #moving a red guti
             if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
-                new_x = int(possible_j * (self.canvasWidth)/4)
-                new_y = int(possible_i * (self.canvasHeight) / 8)
+                new_x = int(possible_j * (self.canvasWidth)/4 + self.x_shift)
+                new_y = int(possible_i * (self.canvasHeight) / 8 + self.y_shift)
                 canvas.delete(self.redguti[self.starting_i][self.starting_j])
                 self.redguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y, image=self.redGuti)
 
@@ -443,10 +452,12 @@ class SixteenGuti_OneVOnePage(tk.Frame):
                 self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y, image=self.greenGuti)
 
         def moveReleased(event):
-            old_x = int(self.starting_j * (self.canvasWidth) / 4)
-            old_y = int(self.starting_i * (self.canvasHeight) / 8)
-            new_x = int(self.released_j * (self.canvasWidth) / 4)
-            new_y = int(self.released_i * (self.canvasHeight) / 8)
+
+
+            old_x = int(self.starting_j * (self.canvasWidth - 2*self.x_shift) / 4 + self.x_shift)
+            old_y = int(self.starting_i * (self.canvasHeight - 2*self.y_shift) / 8 + self.y_shift)
+            new_x = int(self.released_j * (self.canvasWidth - 2*self.x_shift) / 4 + self.x_shift)
+            new_y = int(self.released_i * (self.canvasHeight - 2*self.y_shift) / 8 + self.y_shift)
 
             #distance between initial and released posiiton
             self.distInSqr = distanceInSquare(self.starting_j,self.starting_i,self.released_j,self.released_i)
@@ -463,7 +474,7 @@ class SixteenGuti_OneVOnePage(tk.Frame):
                     self.currentPlayer = 1#player now green
                 else:
                     canvas.delete(self.redguti[self.starting_i][self.starting_j])
-                    self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y, image=self.redGuti)
+                    self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x , old_y , image=self.redGuti)
 
             # moving a green guti
             if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
@@ -471,7 +482,7 @@ class SixteenGuti_OneVOnePage(tk.Frame):
                 if isValid16GutiMove(self.starting_j, self.starting_i, self.released_j, self.released_i,
                                      self.distInSqr, self.boardArray, self.currentPlayer):
                     canvas.delete(self.greenguti[self.starting_i][self.starting_j])
-                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x , new_y,
                                                                                          image=self.greenGuti)
                     self.boardArray[self.starting_i][self.starting_j] = 0
                     self.boardArray[self.released_i][self.released_j] = 1
