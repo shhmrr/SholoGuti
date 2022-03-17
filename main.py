@@ -1,13 +1,11 @@
 
-import PageOne
-from PageOne import *
 try:
     import tkinter as tk                # python 3
     from tkinter import font as tkfont  # python 3
 except ImportError:
     import Tkinter as tk     # python 2
     import tkFont as tkfont  # python 2
-from PageOne import Page1
+
 from PIL import ImageTk, Image
 
 
@@ -169,213 +167,87 @@ def distanceInSquare(starting_j, starting_i, released_j, released_i):
     #x0,y0,x1,y1
     distInSqr = (starting_j - released_j)*(starting_j - released_j) + (starting_i - released_i)*(starting_i - released_i)
     return distInSqr
-def isValid16GutiMove(starting_j, starting_i, released_j, released_i,distInSqr,boardArr,currentPlayer):
 
-    #invalid moves on upper triangle
-    if released_j == 1 and released_i == 0:
-        return 0
-    if released_j == 3 and released_i == 0:
-        return 0
-    if released_j == 0 and released_i == 1:
-        return 0
-    if released_j == 4 and released_i == 1:
-        return 0
-    # invalid moves on lower triangle
-    if released_j == 1 and released_i == 8:
-        return 0
-    if released_j == 3 and released_i == 8:
-        return 0
-    if released_j == 0 and released_i == 7:
-        return 0
-    if released_j == 4 and released_i == 7:
-        return 0
-    #invalid two step moves with space in the middle on upper side
-    if starting_j == 0and starting_i == 0and released_j == 0 and released_i ==  2:
-        return 0
-    if starting_j == 0and starting_i == 2and released_j == 0 and released_i ==  0:
-        return 0
-    if starting_j == 4and starting_i == 0and released_j == 4 and released_i ==  2:
-        return 0
-    if starting_j == 4and starting_i == 2and released_j == 4 and released_i ==  0:
-        return 0
+def validPosition(x, y):
+    return x >= 0 and x <9 and y >= 0 and y < 5
 
-    if starting_j == 1 and starting_i == 1 and released_j == 1 and released_i == 3:
-        return 0
-    if starting_j == 1 and starting_i == 3 and released_j == 1 and released_i == 1:
-        return 0
-    if starting_j == 3 and starting_i == 1 and released_j == 3 and released_i == 3:
-        return 0
-    if starting_j == 3 and starting_i == 3 and released_j == 3 and released_i == 1:
-        return 0
+# returns possible move arrayList
+def compute_move_arr():
+    arr = [0]*9
+    for i in range(9):
+        arr[i] = [0]*5
+        for j in range(5):
+            arr[i][j] = []
+    arr[0][0] = [(0, 2), (0, 4), (1, 1), (2, 1)]
+    arr[0][1] = [(0, 0), (0, 4), (1, 2)]
+    arr[0][2] = [(0, 0), (0, 2), (1, 3)]
+    arr[1][1] = [(0, 0), (1, 2), (2, 2)]
+    arr[1][2] = [(0, 2), (1, 1), (1, 3), (2, 2)]
+    arr[2][0] = [(2, 1), (2, 2), (3, 0), (3, 1), (4, 2), (4, 0)]
+    arr[2][1] = [(2, 0), (2, 2), (2, 3), (3, 1), (4, 1)]
+    arr[2][2] = [(1, 1), (1, 2), (1, 3), (0, 0), (0, 4), (0, 2), (2, 0), (2, 1), (2, 3), (2, 4),
+                      (3, 1), (3, 2), (3, 3), (4, 0), (4, 2), (4, 4)]
+    arr[2][3] = [(2, 1), (2, 2), (2, 4), (3, 3), (4, 3)]
+    arr[2][4] = [(2, 2), (2, 3), (3, 3), (3, 4), (4, 2), (4, 4)]
+    arr[3][0] = [(2, 0), (3, 1), (3, 2), (4, 0), (5, 0)]
+    arr[3][1] = [(2, 0), (2, 1), (2, 2), (1, 3), (3, 0), (3, 2), (3, 3), (4, 0), (4, 1), (4, 2), (5, 1), (5, 3)]
+    arr[3][2] = [(1, 2), (2, 2), (3, 0), (3, 1), (3, 3), (3, 4), (4, 2), (5, 2)]
+    arr[3][3] = [(1, 1), (2, 2), (2, 4), (3, 1), (3, 2), (3, 4), (4, 2), (4, 3), (4, 4), (5, 1), (5, 3)]
+    arr[3][4] = [(2, 4), (3, 2), (3, 3), (4, 4)]
+    arr[4][0] = [(2, 0), (3, 0), (5, 0), (6, 0), (2, 2), (3, 1), (5, 1), (6, 2), (4, 1), (4, 2)]
+    arr[4][1] = [(4, 0), (4, 2), (4, 3), (2, 1), (3, 1), (5, 1), (6, 1)]
+    arr[4][2] = [(2, 0), (2, 2), (2, 4), (3, 1), (3, 2), (3, 3), (4, 0), (4, 1), (4, 3), (4, 4), (5, 1), (5, 2),
+                        (5, 3), (6, 0), (6, 2), (6, 4)]
+    arr[4][3] = [(2, 3), (3, 3), (4, 1), (4, 2), (4, 4), (5, 3), (6, 3)]
+    arr[4][4] = [(2, 2), (2, 4), (3, 3), (3, 4), (4, 2), (4, 3), (5, 3), (5, 4), (6, 2), (6, 4)]
+    
+    # lets loop for the rest 
+    for i in range(4):
+        for j in range(5):
+            arr[8-i][j] = []
+            for k in arr[i][j]:
+                if k[0] == i:
+                    arr[8-i][j].append((8-i, k[1]))
+                else:
+                    arr[8-i][j].append((8-k[0], k[1]))
+    
+    return arr
 
-    if starting_j == 1 and starting_i == 1 and released_j == 1 and released_i == 2:
-        return 0
-    if starting_j == 1 and starting_i == 2 and released_j == 1 and released_i == 1:
-        return 0
-    if starting_j == 3 and starting_i == 1 and released_j == 3 and released_i == 2:
-        return 0
-    if starting_j == 3 and starting_i == 2 and released_j == 3 and released_i == 1:
-        return 0
+def isValid16GutiMove(move_arr, starting_j, starting_i, released_j, released_i,distInSqr,boardArr,currentPlayer):
+    # need to varify if a move to (released_i, released_j) is possible
+    
+    target = (released_i, released_j)
+    #print(target)
+    for k in move_arr[starting_i][starting_j]:
+        if k == target and boardArr[target[0]][target[1]] == 0:
+            if distInSqr == 1 or distInSqr == 2:
+                return 1
+            else:
+                m1 = int((starting_i+k[0])/2)
+                m2 = int((starting_j+k[1])/2)
+                if (boardArr[m1][m2] == -1):
+                    return 1
+                if (currentPlayer == 1 and boardArr[m1][m2] == 2):
+                    return 2
+                if (currentPlayer == 2 and boardArr[m1][m2] == 1):
+                    return 2
+    return 0
 
-    if starting_j == 1 and starting_i == 1 and released_j == 0 and released_i == 2:
-        return 0
-    if starting_j == 0 and starting_i == 2 and released_j == 1 and released_i == 1:
-        return 0
-    if starting_j == 3 and starting_i == 1 and released_j == 4 and released_i == 2:
-        return 0
-    if starting_j == 4 and starting_i == 2 and released_j == 3 and released_i == 1:
-        return 0
-
-    if starting_j == 2 and starting_i == 0 and released_j == 0 and released_i == 2:
-        return 0
-    if starting_j == 0 and starting_i == 2 and released_j == 2 and released_i == 0:
-        return 0
-    if starting_j == 2 and starting_i == 0 and released_j == 4 and released_i == 2:
-        return 0
-    if starting_j == 4 and starting_i == 2 and released_j == 2 and released_i == 0:
-        return 0
-
-    if starting_j == 2 and starting_i == 1 and released_j == 1 and released_i == 2:
-        return 0
-    if starting_j == 1 and starting_i == 2 and released_j == 2 and released_i == 1:
-        return 0
-    if starting_j == 2 and starting_i == 1 and released_j == 3 and released_i == 2:
-        return 0
-    if starting_j == 3 and starting_i == 2 and released_j == 2 and released_i == 1:
-        return 0
-
-    if starting_j == 2 and starting_i == 1 and released_j == 0 and released_i == 3:
-        return 0
-    if starting_j == 0 and starting_i == 3 and released_j == 2 and released_i == 1:
-        return 0
-    if starting_j == 2 and starting_i == 1 and released_j == 4 and released_i == 3:
-        return 0
-    if starting_j == 4 and starting_i == 3 and released_j == 2 and released_i == 1:
-        return 0
-
-    if starting_j == 2 and starting_i == 0 and released_j == 1 and released_i == 1:
-        return 0
-    if starting_j == 1 and starting_i == 1 and released_j == 2 and released_i == 0:
-        return 0
-    if starting_j == 2 and starting_i == 0 and released_j == 3 and released_i == 1:
-        return 0
-    if starting_j == 3 and starting_i == 1 and released_j == 2 and released_i == 0:
-        return 0
-
-
-    # invalid two step moves with space in the middle on lower side
-    if starting_j == 0and starting_i == 6and released_j == 0 and released_i ==  8:
-        return 0
-    if starting_j == 0and starting_i == 8and released_j == 0 and released_i ==  6:
-        return 0
-    if starting_j == 4and starting_i == 6and released_j == 4 and released_i ==  8:
-        return 0
-    if starting_j == 4and starting_i == 8and released_j == 4 and released_i ==  6:
-        return 0
-
-    if starting_j == 1and starting_i == 6and released_j == 1 and released_i ==  7:
-        return 0
-    if starting_j == 1and starting_i == 7and released_j == 1 and released_i ==  6:
-        return 0
-    if starting_j == 3and starting_i == 6and released_j == 3 and released_i ==  7:
-        return 0
-    if starting_j == 3and starting_i == 7and released_j ==  3and released_i ==  6:
-        return 0
-
-    if starting_j == 1and starting_i == 5and released_j == 1 and released_i ==  7:
-        return 0
-    if starting_j == 1and starting_i == 7and released_j == 1 and released_i ==  5:
-        return 0
-    if starting_j == 3and starting_i == 5and released_j == 3 and released_i ==  7:
-        return 0
-    if starting_j == 3and starting_i == 7and released_j ==  3and released_i ==  5:
-        return 0
-
-    if starting_j == 2and starting_i == 8and released_j == 1 and released_i ==  7:
-        return 0
-    if starting_j == 1and starting_i == 7and released_j == 2 and released_i ==  8:
-        return 0
-    if starting_j == 2and starting_i == 8and released_j == 3 and released_i ==  7:
-        return 0
-    if starting_j == 3and starting_i == 7and released_j ==  2and released_i ==  8:
-        return 0
-
-    if starting_j == 2and starting_i == 8and released_j == 0 and released_i ==  6:
-        return 0
-    if starting_j == 0and starting_i == 6and released_j == 2 and released_i ==  8:
-        return 0
-    if starting_j == 2and starting_i == 8and released_j == 4 and released_i ==  6:
-        return 0
-    if starting_j == 4and starting_i == 6and released_j ==  2and released_i ==  8:
-        return 0
-
-    if starting_j == 0and starting_i == 6and released_j == 1 and released_i ==  7:
-        return 0
-    if starting_j == 1and starting_i == 7and released_j == 0 and released_i ==  6:
-        return 0
-    if starting_j == 4and starting_i == 6and released_j == 3 and released_i ==  7:
-        return 0
-    if starting_j == 3and starting_i == 7and released_j ==  4and released_i ==  6:
-        return 0
-
-    if starting_j == 1 and starting_i == 6 and released_j == 2 and released_i == 7:
-        return 0
-    if starting_j == 2 and starting_i == 7 and released_j == 1 and released_i == 6:
-        return 0
-    if starting_j == 3 and starting_i == 6 and released_j == 2 and released_i == 7:
-        return 0
-    if starting_j == 2 and starting_i == 7 and released_j == 3 and released_i == 6:
-        return 0
-
-    if starting_j == 0 and starting_i == 5 and released_j == 2 and released_i == 7:
-        return 0
-    if starting_j == 2 and starting_i == 7 and released_j == 0 and released_i == 5:
-        return 0
-    if starting_j == 4 and starting_i == 5 and released_j == 2 and released_i == 7:
-        return 0
-    if starting_j == 2 and starting_i == 7 and released_j == 4 and released_i == 5:
-        return 0
-
-    #current player is red
-    if currentPlayer == 2:
-        print("Red Player")
-
-        if distInSqr == 1 and boardArr[released_i][released_j] == 0: #moving one step horizontally or vertically and no coin on the place
-            return 1 #1 is valid
-
-        if distInSqr == 4: #moving two steps horizontally or vertically
-            middle_i = int((starting_i + released_i)/2)
-            middle_j = int((starting_j + released_j) / 2)
-            if boardArr[middle_i][middle_j] == 1 and boardArr[released_i][released_j] == 0: #the middle position has an opponent coin i.e green
-                return 2 #2 is valid and an opponent coin got eaten
-
-        valid_diagonal_arr = [[0, 2], [2, 2], [4, 2], [1, 3], [3, 3], [0, 4], [2, 4], [4, 4], [1, 5], [3, 5], [0, 6],
-                              [2, 6], [4, 6], [0, 0], [1, 1], [4, 0], [3, 1], [0, 8], [1, 7], [4, 8], [3, 7]]
-        if distInSqr == 2: #moving one step diagonally
-            #there are 12 valid points for diagonal movements
-            for i in range(len(valid_diagonal_arr)):
-                if starting_j == valid_diagonal_arr[i][0] and starting_i == valid_diagonal_arr[i][1] and boardArr[released_i][released_j] == 0:
-                    return 1#valid one step diagonal movement
-
-
-        if distInSqr == 8: #moving two steps diagonally
-            middle_i = int((starting_i + released_i) / 2)
-            middle_j = int((starting_j + released_j) / 2)
-            # there are 12 valid points for diagonal movements
-            for i in range(len(valid_diagonal_arr)):
-                if starting_j == valid_diagonal_arr[i][0] and starting_i == valid_diagonal_arr[i][1] and boardArr[released_i][released_j] == 0:
-                    if boardArr[middle_i][middle_j] == 1:  # the middle position has an opponent coin i.e green
-                        return 2  # 2 is valid and an opponent coin got eaten
-
-
-
-    #current player is green
-    if currentPlayer == 1:
-        return 1#valid
-        print("Green Player")
-
-        #unfinished code
-
+# returns 1 if there is an eating move available
+def isEatingMoveAvailable(current_i, current_j, move_arr, boardArr, currentPlayer):
+    
+    for k in move_arr[current_i][current_j]:
+        distInSqr = distanceInSquare(k[1], k[0], current_j, current_i)
+        if distInSqr != 1 and distInSqr != 2 and boardArr[k[0]][k[1]] == 0:
+            m1 = int((current_i+k[0])/2)
+            m2 = int((current_j+k[1])/2)
+            if (boardArr[m1][m2] == -1):
+                return 0
+            if (currentPlayer == 1 and boardArr[m1][m2] == 2):
+                return 1
+            if (currentPlayer == 2 and boardArr[m1][m2] == 1):
+                return 1
+    return 0
 
 class SixteenGuti_OneVOnePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -399,12 +271,15 @@ class SixteenGuti_OneVOnePage(tk.Frame):
 
         self.boardArray = FillingArray16GutiBoard()
 
+        self.move_arr = compute_move_arr()
+
         self.redGuti = ImageTk.PhotoImage(file="redGuti.png")
         self.greenGuti = ImageTk.PhotoImage(file="greenGuti.png")
         self.redguti = [] #holds information about the red guti image. a 2d array.
         self.greenguti = [] #holds information about the green guti image. a 2d array.
         self.redguti,self.greenguti= Drawing16GutiBoardRedBluePlayers(canvas,self.canvasWidth,self.canvasHeight,self.boardArray,self.redGuti,self.greenGuti)
         self.currentPlayer = 2 ##current player is Red
+    
         print(self.redguti)
         print(self.greenguti)
         self.x = 0
@@ -414,6 +289,9 @@ class SixteenGuti_OneVOnePage(tk.Frame):
         self.starting_j = 0
         self.released_i = 0
         self.released_j = 0
+        self.middle_i = 0
+        self.middle_j = 0
+        self.eatingMove = (-1, -1)
         self.gate = 0
         self.x_shift = 25 #same shift applied in the drawing function
         self.y_shift = 25
@@ -463,30 +341,72 @@ class SixteenGuti_OneVOnePage(tk.Frame):
             self.distInSqr = distanceInSquare(self.starting_j,self.starting_i,self.released_j,self.released_i)
 
             ## currentPlayer 1 is Green and 2 is Red
+            
             # moving a red guti
             if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
-
-                if isValid16GutiMove(self.starting_j,self.starting_i,self.released_j,self.released_i,self.distInSqr,self.boardArray,self.currentPlayer):
+                
+                ret = isValid16GutiMove(self.move_arr,self.starting_j,self.starting_i,self.released_j,self.released_i,self.distInSqr,self.boardArray,self.currentPlayer)
+                
+                # a single unit move, no eating
+                if ret == 1 and self.eatingMove == (-1, -1):
                     canvas.delete(self.redguti[self.starting_i][self.starting_j])
                     self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,image=self.redGuti)
                     self.boardArray[self.starting_i][self.starting_j] = 0
                     self.boardArray[self.released_i][self.released_j] = 2
-                    self.currentPlayer = 1#player now green
+                    self.currentPlayer = 1 #player now green
+                
+                # a eating move, move retained, subsequent moves will be eating move
+                elif ret == 2 and (self.eatingMove == (-1, -1) or self.eatingMove == (self.starting_i, self.starting_j)):
+                    self.eatingMove = (self.released_i, self.release_j)
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,image=self.redGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 2
+                    self.middle_i = int((self.starting_i+self.released_i)/2)
+                    self.middle_j = int((self.starting_j+self.released_j)/2)
+                    canvas.delete(self.greenguti[self.middle_i][self.middle_j])
+                    self.boardArray[self.middle_i][self.middle_j] = 0
+                    
+                    if isEatingMoveAvailable(self.released_i, self.released_j, self.move_arr, self.boardArray, self.currentPlayer) == 0:
+                        self.currentPlayer = 1 # player now green
+                        self.eatingMove = (-1, -1)
+                
+                # invalid move, move retained 
                 else:
                     canvas.delete(self.redguti[self.starting_i][self.starting_j])
                     self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x , old_y , image=self.redGuti)
 
             # moving a green guti
             if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
-
-                if isValid16GutiMove(self.starting_j, self.starting_i, self.released_j, self.released_i,
-                                     self.distInSqr, self.boardArray, self.currentPlayer):
+                ret = isValid16GutiMove(self.move_arr, self.starting_j, self.starting_i, self.released_j, self.released_i,
+                                     self.distInSqr, self.boardArray, self.currentPlayer)
+                
+                # a single move, no eating
+                if ret == 1 and self.eatingMove == (-1, -1):
                     canvas.delete(self.greenguti[self.starting_i][self.starting_j])
                     self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x , new_y,
                                                                                          image=self.greenGuti)
                     self.boardArray[self.starting_i][self.starting_j] = 0
                     self.boardArray[self.released_i][self.released_j] = 1
                     self.currentPlayer = 2  # player now red
+                
+                # eating a opposite coin, move retained
+                elif ret == 2 and (self.eatingMove == (-1, -1) or (self.starting_i, self.starting_j)) :
+                    self.eatingMove = (self.released_i, self.released_j)
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,image=self.greenGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 1
+                    self.middle_i = int((self.starting_i+self.released_i)/2)
+                    self.middle_j = int((self.starting_j+self.released_j)/2)
+                    canvas.delete(self.redguti[self.middle_i][self.middle_j])
+                    self.boardArray[self.middle_i][self.middle_j] = 0
+
+                    if isEatingMoveAvailable(self.released_i, self.released_j, self.move_arr, self.boardArray, self.currentPlayer) == 0:
+                        self.currentPlayer = 2 # player now red
+                        self.eatingMove = (-1, -1)
+                
+                # invalid move, move retained 
                 else:
                     canvas.delete(self.greenguti[self.starting_i][self.starting_j])
                     self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y,
