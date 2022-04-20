@@ -427,40 +427,58 @@ class SixteenGuti_OneVAIPage(tk.Frame):
 
                 ##check if the last move made by red made him winner or not. if has not won then green makes a move using AI.
                 won = checkWinner(self.boardArray)
+                self.green_first_turn = 1
+                self.fin_i = -1
+                self.fin_j = -1
                 if won == 2:
                     print("Red Won!")
 
                 elif self.currentPlayer == 1: ##green move
 
                     print("green turn")
-                    #minmx = Minmax.boardArr(self.boardArray)
-                    #self.boardArray = minmx
 
-                    for i in range(9):
-                        for j in range(5):
-                            if self.boardArray[i][j] == 2:
-                                canvas.delete(self.redguti[i][j])
-                            if self.boardArray[i][j] == 1:
-                                canvas.delete(self.greenguti[i][j])
-                            self.redguti[i][j] = self.greenguti[i][j] = 0
-                    minmxob= Minmax(self.boardArray)
-                    self.boardArray = minmxob.boardArr()
+                    while True:
 
-                    for i in range(9):
-                        print(self.boardArray[i][0]," ",self.boardArray[i][1]," ",self.boardArray[i][2]," ",self.boardArray[i][3]," ",self.boardArray[i][4]," ",)
 
-                    ##Drawing the newly formed board after the AI makes the move
-                    for i in range(9):
-                        for j in range(5):
-                            new_x = int(j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
-                            new_y = int(i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
-                            if self.boardArray[i][j] == 2:
-                                self.redguti[i][j] = canvas.create_image(new_x, new_y,
-                                                                                                     image=self.redGuti)
-                            if self.boardArray[i][j] == 1:
-                                self.greenguti[i][j] = canvas.create_image(new_x, new_y,
-                                                                         image=self.greenGuti)
-                    self.currentPlayer = 2
+                        for i in range(9):
+                            for j in range(5):
+                                if self.boardArray[i][j] == 2:
+                                    canvas.delete(self.redguti[i][j])
+                                if self.boardArray[i][j] == 1:
+                                    canvas.delete(self.greenguti[i][j])
+                                self.redguti[i][j] = self.greenguti[i][j] = 0
+
+                        minmxob= Minmax(self.boardArray,self.green_first_turn,self.fin_i,self.fin_j)
+                        self.boardArray,ret_green,ini_i,ini_j,self.fin_i,self.fin_j = minmxob.boardArr()
+
+                        print("mainpy")
+                        for i in range(9):
+                            print(self.boardArray[i][0]," ",self.boardArray[i][1]," ",self.boardArray[i][2]," ",self.boardArray[i][3]," ",self.boardArray[i][4]," ",)
+
+                        ##Drawing the newly formed board after the AI makes the move
+
+                        for i in range(9):
+                            for j in range(5):
+                                new_x = int(j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+                                new_y = int(i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+                                if self.boardArray[i][j] == 2:
+                                    self.redguti[i][j] = canvas.create_image(new_x, new_y, image=self.redGuti)
+
+                                if self.boardArray[i][j] == 1:
+                                    self.greenguti[i][j] = canvas.create_image(new_x, new_y, image=self.greenGuti)
+
+                        # def cu():
+                        #     new_x = int(fin_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+                        #     new_y = int(fin_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+                        #     self.greenguti[fin_i][fin_j] = canvas.create_image(new_x, new_y, image=self.greenGuti)
+
+                        #app.after(1000,cu)
+                        if ret_green == 1:
+                            self.currentPlayer = 2
+                            break
+                        if ret_green == 2:
+                            self.green_first_turn = 0#not first turn
+                            continue
 
 
             self.gate = 0

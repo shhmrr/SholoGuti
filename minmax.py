@@ -52,7 +52,6 @@ def compute_move_arr():
                  (5, 3), (6, 0), (6, 2), (6, 4)]
     arr[4][3] = [(2, 3), (3, 3), (4, 1), (4, 2), (4, 4), (5, 3), (6, 3)]
     arr[4][4] = [(2, 2), (2, 4), (3, 3), (3, 4), (4, 2), (4, 3), (5, 3), (5, 4), (6, 2), (6, 4)]
-
     # lets loop for the rest
     for i in range(4):
         for j in range(5):
@@ -66,30 +65,60 @@ def compute_move_arr():
     return arr
 
 class Minmax:
-    def __init__(self,boardarr):
+    def __init__(self,boardarr,first_turn,new_i,new_j):
         self.boardarr = boardarr
         self.move_arr = compute_move_arr()
-
+        self.first_turn = first_turn
+        self.new_i = new_i
+        self.new_j = new_j
     def boardArr(self):
         print()
         print()
+        print("minmaxpy")
         for i in range(9):
             print(self.boardarr[i][0], " ", self.boardarr[i][1], " ", self.boardarr[i][2], " ",
                   self.boardarr[i][3], " ", self.boardarr[i][4], " ", )
         print("qwe")
         print()
+        if self.first_turn:
+            for i in range(9):
+                for j in range(5):
+                    if self.boardarr[i][j] == 1: #is a green
+                        for ii in range(9):
+                            for jj in range(5):
 
-        for i in range(9):
-            for j in range(5):
-                if self.boardarr[i][j] == 1: #is a green
-                    for ii in range(9):
-                        for jj in range(5):
+                                distInSqr = distanceInSquare1(j,i,jj,ii)
+                                ret = isValid16GutiMoveAI(self.move_arr, j, i, jj,ii, distInSqr, self.boardarr,1)
+                                if ret == 1:
+                                    self.boardarr[i][j] = 0
+                                    self.boardarr[ii][jj] = 1
+                                    return self.boardarr,ret,i,j,ii,jj
+                                if ret == 2:
+                                    print("first turn and two")
+                                    self.boardarr[i][j] = 0
+                                    midi = int((i+ii)/2)
+                                    midj = int((j+jj)/2)
+                                    self.boardarr[midi][midj] = 0
+                                    self.boardarr[ii][jj] = 1
+                                    return self.boardarr,ret,i,j,ii,jj
 
-                            distInSqr = distanceInSquare1(j,i,jj,ii)
-                            ret = isValid16GutiMoveAI(self.move_arr, j, i, jj,ii, distInSqr, self.boardarr,1)
-                            if ret == 1:
-                                self.boardarr[i][j] = 0
-                                self.boardarr[ii][jj] = 1
-                                return self.boardarr
+        else:
 
+            for ii in range(9):
+                for jj in range(5):
+
+                    distInSqr = distanceInSquare1(self.new_j, self.new_i, jj, ii)
+                    ret = isValid16GutiMoveAI(self.move_arr, self.new_j, self.new_i, jj, ii, distInSqr, self.boardarr, 1)
+                    if ret == 1: #in a second turn last turn always has to be a eating turn
+                        #self.boardarr[self.new_i][self.new_j] = 0
+                        #self.boardarr[ii][jj] = 1
+                        return self.boardarr, ret, self.new_i, self.new_j, ii, jj
+                    if ret == 2:
+                        print("second turn and two")
+                        self.boardarr[self.new_i][self.new_j] = 0
+                        midi = int((self.new_i + ii) / 2)
+                        midj = int((self.new_j + jj) / 2)
+                        self.boardarr[midi][midj] = 0
+                        self.boardarr[ii][jj] = 1
+                        return self.boardarr, ret, self.new_i, self.new_j, ii, jj
 
