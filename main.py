@@ -25,7 +25,7 @@ class SampleApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, SixteenGutiPage, TwelveGutiPage, SixteenGuti_OneVOnePage, SixteenGuti_OneVAIPage):
+        for F in (StartPage, SixteenGutiPage, TwelveGutiPage, SixteenGuti_OneVOnePage, SixteenGuti_OneVAIPage,TwelveGuti_OneVOnePage, TwelveGuti_OneVAIPage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -437,48 +437,44 @@ class SixteenGuti_OneVAIPage(tk.Frame):
 
                     print("green turn")
 
-                    while True:
 
 
-                        for i in range(9):
-                            for j in range(5):
-                                if self.boardArray[i][j] == 2:
-                                    canvas.delete(self.redguti[i][j])
-                                if self.boardArray[i][j] == 1:
-                                    canvas.delete(self.greenguti[i][j])
-                                self.redguti[i][j] = self.greenguti[i][j] = 0
 
-                        minmxob= Minmax(self.boardArray,self.green_first_turn,self.fin_i,self.fin_j)
-                        self.boardArray,ret_green,ini_i,ini_j,self.fin_i,self.fin_j = minmxob.boardArr()
+                    for i in range(9):
+                        for j in range(5):
+                            if self.boardArray[i][j] == 2:
+                                canvas.delete(self.redguti[i][j])
+                            if self.boardArray[i][j] == 1:
+                                canvas.delete(self.greenguti[i][j])
+                            self.redguti[i][j] = self.greenguti[i][j] = 0
 
-                        print("mainpy")
-                        for i in range(9):
-                            print(self.boardArray[i][0]," ",self.boardArray[i][1]," ",self.boardArray[i][2]," ",self.boardArray[i][3]," ",self.boardArray[i][4]," ",)
+                    minmxob= Minmax(self.boardArray)
+                    self.boardArray = minmxob.boardArr()
 
-                        ##Drawing the newly formed board after the AI makes the move
+                    print("mainpy")
+                    for i in range(9):
+                        print(self.boardArray[i][0]," ",self.boardArray[i][1]," ",self.boardArray[i][2]," ",self.boardArray[i][3]," ",self.boardArray[i][4]," ",)
 
-                        for i in range(9):
-                            for j in range(5):
-                                new_x = int(j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
-                                new_y = int(i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
-                                if self.boardArray[i][j] == 2:
-                                    self.redguti[i][j] = canvas.create_image(new_x, new_y, image=self.redGuti)
+                    ##Drawing the newly formed board after the AI makes the move
 
-                                if self.boardArray[i][j] == 1:
-                                    self.greenguti[i][j] = canvas.create_image(new_x, new_y, image=self.greenGuti)
+                    for i in range(9):
+                        for j in range(5):
+                            new_x = int(j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+                            new_y = int(i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+                            if self.boardArray[i][j] == 2:
+                                self.redguti[i][j] = canvas.create_image(new_x, new_y, image=self.redGuti)
 
-                        # def cu():
-                        #     new_x = int(fin_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
-                        #     new_y = int(fin_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
-                        #     self.greenguti[fin_i][fin_j] = canvas.create_image(new_x, new_y, image=self.greenGuti)
+                            if self.boardArray[i][j] == 1:
+                                self.greenguti[i][j] = canvas.create_image(new_x, new_y, image=self.greenGuti)
 
-                        #app.after(1000,cu)
-                        if ret_green == 1:
-                            self.currentPlayer = 2
-                            break
-                        if ret_green == 2:
-                            self.green_first_turn = 0#not first turn
-                            continue
+                    # def cu():
+                    #     new_x = int(fin_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+                    #     new_y = int(fin_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+                    #     self.greenguti[fin_i][fin_j] = canvas.create_image(new_x, new_y, image=self.greenGuti)
+
+                    #app.after(1000,cu)
+
+                    self.currentPlayer = 2
 
 
             self.gate = 0
@@ -674,18 +670,497 @@ class SixteenGuti_OneVOnePage(tk.Frame):
         canvas.bind('<B1-Motion>', moveGuti)
         canvas.bind('<ButtonRelease-1>', moveReleased)
 
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+########################################################################################################################################################################
+
+def Drawing12GutiBoard(canvas, canvasWidth, canvasHeight):
+    w = canvasWidth - 50
+    h = canvasHeight - 50
+    x_shift = 25
+    y_shift = 25
+    ##horizontal lines
+    #canvas.create_line(0 + x_shift, 0 + y_shift, w + x_shift, 0 + y_shift, fill='black', width=3)
+    #canvas.create_line(w / 4 + x_shift, h / 8 + y_shift, 3 * w / 4 + x_shift, h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 2 * h / 8 + y_shift, w + x_shift, 2 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 3 * h / 8 + y_shift, w + x_shift, 3 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 4 * h / 8 + y_shift, w + x_shift, 4 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 5 * h / 8 + y_shift, w + x_shift, 5 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(0 + x_shift, 6 * h / 8 + y_shift, w + x_shift, 6 * h / 8 + y_shift, fill='black', width=3)
+    #canvas.create_line(w / 4 + x_shift, 7 * h / 8 + y_shift, 3 * w / 4 + x_shift, 7 * h / 8 + y_shift, fill='black',width=3)
+    #canvas.create_line(0 + x_shift, h + y_shift, w + x_shift, h + y_shift, fill='black', width=3)
+    ##vertical lines
+    canvas.create_line(0 + x_shift, 2 * h / 8 + y_shift, 0 + x_shift, 6 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(w / 4 + x_shift, 2 * h / 8 + y_shift, w / 4 + x_shift, 6 * h / 8 + y_shift, fill='black',
+                       width=3)
+    canvas.create_line(2 * w / 4 + x_shift, 2 * h / 8+ y_shift, 2 * w / 4 + x_shift, 6 * h / 8  + y_shift, fill='black', width=3)
+    canvas.create_line(3 * w / 4 + x_shift, 2 * h / 8 + y_shift, 3 * w / 4 + x_shift, 6 * h / 8 + y_shift, fill='black',
+                       width=3)
+    canvas.create_line(w + x_shift, 2 * h / 8 + y_shift, w + x_shift, 6 * h / 8 + y_shift, fill='black', width=3)
+    ##Diagonals top and bottom
+    #canvas.create_line(0 + x_shift, 0 + y_shift, 2 * w / 4 + x_shift, 2 * h / 8 + y_shift, fill='black', width=3)
+    #canvas.create_line(w + x_shift, 0 + y_shift, 2 * w / 4 + x_shift, 2 * h / 8 + y_shift, fill='black', width=3)
+    #canvas.create_line(0 + x_shift, h + y_shift, 2 * w / 4 + x_shift, 6 * h / 8 + y_shift, fill='black', width=3)
+    #canvas.create_line(w + x_shift, h + y_shift, 2 * w / 4 + x_shift, 6 * h / 8 + y_shift, fill='black', width=3)
+    ##Diagonals in the middle
+    # up-left to bottom-right
+    canvas.create_line(0 + x_shift, 2 * h / 8 + y_shift, w + x_shift, 6 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(2 * w / 4 + x_shift, 2 * h / 8 + y_shift, w + x_shift, 4 * h / 8 + y_shift, fill='black',
+                       width=3)
+    canvas.create_line(0 + x_shift, 4 * h / 8 + y_shift, 2 * w / 4 + x_shift, 6 * h / 8 + y_shift, fill='black',
+                       width=3)
+    ##bottom-left to up-right
+    canvas.create_line(0 + x_shift, 4 * h / 8 + y_shift, 2 * w / 4 + x_shift, 2 * h / 8 + y_shift, fill='black',
+                       width=3)
+    canvas.create_line(0 + x_shift, 6 * h / 8 + y_shift, w + x_shift, 2 * h / 8 + y_shift, fill='black', width=3)
+    canvas.create_line(2 * w / 4 + x_shift, 6 * h / 8 + y_shift, w + x_shift, 4 * h / 8 + y_shift, fill='black',
+                       width=3)
+
+def FillingArray12GutiBoard():
+    # the 16guti game is played in a 9 by 5 board. row = 9 col = 5
+    # red = 2
+    # green = 1
+    # blank = 0
+    # invalid = -1
+    # spaces in the board or not a move for the coin = -1 the board is not entirely a square
+
+    arr = []
+    arr.append([-1, -1, -1, -1, -1])
+    arr.append([-1, -1, -1, -1, -1])
+    arr.append([1, 1, 1, 1, 1])
+    arr.append([1, 1, 1, 1, 1])
+    arr.append([2, 2, 0, 1, 1])
+    arr.append([2, 2, 2, 2, 2])
+    arr.append([2, 2, 2, 2, 2])
+    arr.append([-1, -1, -1, -1, -1])
+    arr.append([-1, -1, -1, -1, -1])
+    return arr
+
+
+def Drawing12GutiBoardRedBluePlayers(canvas, canvasWidth, canvasHeight, arr, redGuti, blueGuti):
+    canvasWidth = canvasWidth - 50
+    canvasHeight = canvasHeight - 50
+    x_shift = 25
+    y_shift = 25
+
+    redguti = []
+    greenguti = []
+    for i in range(9):
+        temp = []
+        for j in range(5):
+            temp.append(0)
+        redguti.append(temp)
+        greenguti.append(temp)
+
+    for i in range(9):
+        for j in range(5):
+            if arr[i][j] == 1:
+                greenguti1 = canvas.create_image(j * canvasWidth / 4 + x_shift, i * canvasHeight / 8 + y_shift,
+                                                 image=blueGuti)
+                greenguti[i][j] = greenguti1
+            if arr[i][j] == 2:
+                redguti1 = canvas.create_image(j * canvasWidth / 4 + x_shift, i * canvasHeight / 8 + y_shift,
+                                               image=redGuti)
+                redguti[i][j] = redguti1
+    return redguti, greenguti
+
+
 
 class TwelveGutiPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="This is page 2", font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Back to Menu",
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack()
+        ##background
+        self.img = ImageTk.PhotoImage(Image.open("woodtexture1.gif"))  # PIL solution
+        background_label = tk.Label(self, image=self.img)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
+        buttonMenu = tk.Button(self, text="Back to Menu",
+                               command=lambda: controller.show_frame("StartPage"), height=2, width=10)
+        buttonOneVOne = tk.Button(self, text="Play 1Vs1",
+                                  command=lambda: controller.show_frame("TwelveGuti_OneVOnePage"), height=3, width=20)
+        buttonOneVAI = tk.Button(self, text="Play Against Computer",
+                                 command=lambda: controller.show_frame("TwelveGuti_OneVAIPage"), height=3, width=20)
+        buttonOneVOne.place(relx=0.25, rely=0.5, anchor="center")
+        buttonOneVAI.place(relx=0.75, rely=0.5, anchor="center")
+        buttonMenu.place(relx=0.5, rely=0.65, anchor="center")
+
+
+class TwelveGuti_OneVOnePage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        ##background
+        self.img = ImageTk.PhotoImage(Image.open("woodtexture1.gif"))  # PIL solution
+        background_label = tk.Label(self, image=self.img)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        buttonMenu = tk.Button(self, text="Back",
+                               command=lambda: controller.show_frame("TwelveGutiPage"), height=2, width=10)
+        buttonMenu.place(relx=0.90, rely=0.90, anchor="center")
+        self.canvasWidth = 300
+        self.canvasHeight = 500
+        canvas = tk.Canvas(self, width=self.canvasWidth, height=self.canvasHeight)
+
+        self.canvas_bg = ImageTk.PhotoImage(file="woodtexture1.gif")
+        canvas.create_image(10, 10, image=self.canvas_bg)
+        canvas.place(relx=0.50, rely=0.50, anchor="center")
+
+        Drawing12GutiBoard(canvas, self.canvasWidth, self.canvasHeight)
+
+        self.boardArray = FillingArray12GutiBoard()
+
+        self.move_arr = compute_move_arr()
+
+        self.redGuti = ImageTk.PhotoImage(file="redGuti.png")
+        self.greenGuti = ImageTk.PhotoImage(file="greenGuti.png")
+        self.redguti = []  # holds information about the red guti image. a 2d array.
+        self.greenguti = []  # holds information about the green guti image. a 2d array.
+        self.redguti, self.greenguti = Drawing12GutiBoardRedBluePlayers(canvas, self.canvasWidth, self.canvasHeight,
+                                                                        self.boardArray, self.redGuti, self.greenGuti)
+        self.currentPlayer = 2  ##current player is Red
+
+        print(self.redguti)
+        print(self.greenguti)
+        self.x = 0
+        self.y = 0
+
+        self.starting_i = 0
+        self.starting_j = 0
+        self.released_i = 0
+        self.released_j = 0
+        self.middle_i = 0
+        self.middle_j = 0
+        self.eatingMove = (-1, -1)
+        self.gate = 0
+        self.x_shift = 25  # same shift applied in the drawing function
+        self.y_shift = 25
+
+        def moveGuti(event):
+            self.x = int(event.x)
+            self.y = int(event.y)
+
+            possible_j = ((self.x - self.x_shift) * 4) / (self.canvasWidth - 2 * self.x_shift)
+            possible_i = ((self.y - self.y_shift) * 8) / (self.canvasHeight - 2 * self.y_shift)
+
+            possible_i = round(possible_i)
+            possible_j = round(possible_j)
+            if self.gate == 0:
+                self.gate = 1
+                self.starting_i = possible_i
+                self.starting_j = possible_j
+            if self.gate == 1:
+                self.released_i = possible_i
+                self.released_j = possible_j
+
+            # print(self.starting_i,self.starting_j)
+            # print(possible_i,possible_j)
+
+            # moving a red guti
+            if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
+                new_x = int(possible_j * (self.canvasWidth) / 4 + self.x_shift)
+                new_y = int(possible_i * (self.canvasHeight) / 8 + self.y_shift)
+                canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                self.redguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y,
+                                                                                     image=self.redGuti)
+
+            # moving a green guti
+            if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
+                new_x = int(possible_j * (self.canvasWidth) / 4)
+                new_y = int(possible_i * (self.canvasHeight) / 8)
+                canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y,
+                                                                                       image=self.greenGuti)
+
+        def moveReleased(event):
+
+            old_x = int(self.starting_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+            old_y = int(self.starting_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+            new_x = int(self.released_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+            new_y = int(self.released_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+
+            # distance between initial and released posiiton
+            self.distInSqr = distanceInSquare(self.starting_j, self.starting_i, self.released_j, self.released_i)
+
+            ## currentPlayer 1 is Green and 2 is Red
+
+            # moving a red guti
+            if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
+
+                ret = isValid16GutiMove(self.move_arr, self.starting_j, self.starting_i, self.released_j,
+                                        self.released_i, self.distInSqr, self.boardArray, self.currentPlayer)
+
+                # a single unit move, no eating
+                if ret == 1 and self.eatingMove == (-1, -1):
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                         image=self.redGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 2
+                    self.currentPlayer = 1  # player now green
+
+                # a eating move, move retained, subsequent moves will be eating move
+                elif ret == 2 and (
+                        self.eatingMove == (-1, -1) or self.eatingMove == (self.starting_i, self.starting_j)):
+                    self.eatingMove = (self.released_i, self.released_j)
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                         image=self.redGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 2
+                    self.middle_i = int((self.starting_i + self.released_i) / 2)
+                    self.middle_j = int((self.starting_j + self.released_j) / 2)
+                    canvas.delete(self.greenguti[self.middle_i][self.middle_j])
+                    self.boardArray[self.middle_i][self.middle_j] = 0
+
+                    if isEatingMoveAvailable(self.released_i, self.released_j, self.move_arr, self.boardArray,
+                                             self.currentPlayer) == 0:
+                        self.currentPlayer = 1  # player now green
+                        self.eatingMove = (-1, -1)
+
+                # invalid move, move retained
+                else:
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y,
+                                                                                         image=self.redGuti)
+
+            # moving a green guti
+            if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
+                ret = isValid16GutiMove(self.move_arr, self.starting_j, self.starting_i, self.released_j,
+                                        self.released_i,
+                                        self.distInSqr, self.boardArray, self.currentPlayer)
+
+                # a single move, no eating
+                if ret == 1 and self.eatingMove == (-1, -1):
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                           image=self.greenGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 1
+                    self.currentPlayer = 2  # player now red
+
+                # eating a opposite coin, move retained
+                elif ret == 2 and (self.eatingMove == (-1, -1) or (self.starting_i, self.starting_j)):
+                    self.eatingMove = (self.released_i, self.released_j)
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                           image=self.greenGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 1
+                    self.middle_i = int((self.starting_i + self.released_i) / 2)
+                    self.middle_j = int((self.starting_j + self.released_j) / 2)
+                    canvas.delete(self.redguti[self.middle_i][self.middle_j])
+                    self.boardArray[self.middle_i][self.middle_j] = 0
+
+                    if isEatingMoveAvailable(self.released_i, self.released_j, self.move_arr, self.boardArray,
+                                             self.currentPlayer) == 0:
+                        self.currentPlayer = 2  # player now red
+                        self.eatingMove = (-1, -1)
+
+                # invalid move, move retained
+                else:
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y,
+                                                                                           image=self.greenGuti)
+            won = checkWinner(self.boardArray)
+            if won == 2:
+                print("Red Won!")
+            if won == 1:
+                print("Green Won!")
+            self.gate = 0
+
+        canvas.bind('<B1-Motion>', moveGuti)
+        canvas.bind('<ButtonRelease-1>', moveReleased)
+class TwelveGuti_OneVAIPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        ##background
+        self.img = ImageTk.PhotoImage(Image.open("woodtexture1.gif"))  # PIL solution
+        background_label = tk.Label(self, image=self.img)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        buttonMenu = tk.Button(self, text="Back",
+                               command=lambda: controller.show_frame("TwelveGutiPage"), height=2, width=10)
+        buttonMenu.place(relx=0.90, rely=0.90, anchor="center")
+        self.canvasWidth = 300
+        self.canvasHeight = 500
+        canvas = tk.Canvas(self, width=self.canvasWidth, height=self.canvasHeight)
+        self.canvas_bg = ImageTk.PhotoImage(file="woodtexture1.gif")
+        canvas.create_image(10, 10, image=self.canvas_bg)
+        canvas.place(relx=0.50, rely=0.50, anchor="center")
+
+        Drawing12GutiBoard(canvas, self.canvasWidth, self.canvasHeight)
+
+        self.boardArray = FillingArray12GutiBoard()
+
+        self.move_arr = compute_move_arr()
+
+        self.redGuti = ImageTk.PhotoImage(file="redGuti.png")
+        self.greenGuti = ImageTk.PhotoImage(file="greenGuti.png")
+        self.redguti = []  # holds information about the red guti image. a 2d array.
+        self.greenguti = []  # holds information about the green guti image. a 2d array.
+        self.redguti, self.greenguti = Drawing12GutiBoardRedBluePlayers(canvas, self.canvasWidth, self.canvasHeight,
+                                                                        self.boardArray, self.redGuti, self.greenGuti)
+        self.currentPlayer = 2  ##current player is Red
+
+        print(self.redguti)
+        print(self.greenguti)
+        self.x = 0
+        self.y = 0
+
+        self.starting_i = 0
+        self.starting_j = 0
+        self.released_i = 0
+        self.released_j = 0
+        self.middle_i = 0
+        self.middle_j = 0
+        self.eatingMove = (-1, -1)
+        self.gate = 0
+        self.x_shift = 25  # same shift applied in the drawing function
+        self.y_shift = 25
+
+        def moveGuti(event):
+            self.x = int(event.x)
+            self.y = int(event.y)
+
+            possible_j = ((self.x - self.x_shift) * 4) / (self.canvasWidth - 2 * self.x_shift)
+            possible_i = ((self.y - self.y_shift) * 8) / (self.canvasHeight - 2 * self.y_shift)
+
+            possible_i = round(possible_i)
+            possible_j = round(possible_j)
+            if self.gate == 0:
+                self.gate = 1
+                self.starting_i = possible_i
+                self.starting_j = possible_j
+            if self.gate == 1:
+                self.released_i = possible_i
+                self.released_j = possible_j
+
+            # print(self.starting_i,self.starting_j)
+            # print(possible_i,possible_j)
+
+            # moving a red guti
+            if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
+                new_x = int(possible_j * (self.canvasWidth) / 4 + self.x_shift)
+                new_y = int(possible_i * (self.canvasHeight) / 8 + self.y_shift)
+                canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                self.redguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y,
+                                                                                     image=self.redGuti)
+
+            # moving a green guti
+            if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
+                new_x = int(possible_j * (self.canvasWidth) / 4)
+                new_y = int(possible_i * (self.canvasHeight) / 8)
+                canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(event.x, event.y,
+                                                                                       image=self.greenGuti)
+
+        def moveReleased(event):
+
+            old_x = int(self.starting_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+            old_y = int(self.starting_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+            new_x = int(self.released_j * (self.canvasWidth - 2 * self.x_shift) / 4 + self.x_shift)
+            new_y = int(self.released_i * (self.canvasHeight - 2 * self.y_shift) / 8 + self.y_shift)
+
+            # distance between initial and released posiiton
+            self.distInSqr = distanceInSquare(self.starting_j, self.starting_i, self.released_j, self.released_i)
+
+            ## currentPlayer 1 is Green and 2 is Red
+
+            # moving a red guti
+            if self.boardArray[self.starting_i][self.starting_j] == 2 and self.currentPlayer == 2:
+
+                ret = isValid16GutiMove(self.move_arr, self.starting_j, self.starting_i, self.released_j,
+                                        self.released_i, self.distInSqr, self.boardArray, self.currentPlayer)
+
+                # a single unit move, no eating
+                if ret == 1 and self.eatingMove == (-1, -1):
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                         image=self.redGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 2
+                    self.currentPlayer = 1  # player now green
+
+                # a eating move, move retained, subsequent moves will be eating move
+                elif ret == 2 and (
+                        self.eatingMove == (-1, -1) or self.eatingMove == (self.starting_i, self.starting_j)):
+                    self.eatingMove = (self.released_i, self.released_j)
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                         image=self.redGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 2
+                    self.middle_i = int((self.starting_i + self.released_i) / 2)
+                    self.middle_j = int((self.starting_j + self.released_j) / 2)
+                    canvas.delete(self.greenguti[self.middle_i][self.middle_j])
+                    self.boardArray[self.middle_i][self.middle_j] = 0
+
+                    if isEatingMoveAvailable(self.released_i, self.released_j, self.move_arr, self.boardArray,
+                                             self.currentPlayer) == 0:
+                        self.currentPlayer = 1  # player now green
+                        self.eatingMove = (-1, -1)
+
+                # invalid move, move retained
+                else:
+                    canvas.delete(self.redguti[self.starting_i][self.starting_j])
+                    self.redguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y,
+                                                                                         image=self.redGuti)
+
+            # moving a green guti
+            if self.boardArray[self.starting_i][self.starting_j] == 1 and self.currentPlayer == 1:
+                ret = isValid16GutiMove(self.move_arr, self.starting_j, self.starting_i, self.released_j,
+                                        self.released_i,
+                                        self.distInSqr, self.boardArray, self.currentPlayer)
+
+                # a single move, no eating
+                if ret == 1 and self.eatingMove == (-1, -1):
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                           image=self.greenGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 1
+                    self.currentPlayer = 2  # player now red
+
+                # eating a opposite coin, move retained
+                elif ret == 2 and (self.eatingMove == (-1, -1) or (self.starting_i, self.starting_j)):
+                    self.eatingMove = (self.released_i, self.released_j)
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.released_i][self.released_j] = canvas.create_image(new_x, new_y,
+                                                                                           image=self.greenGuti)
+                    self.boardArray[self.starting_i][self.starting_j] = 0
+                    self.boardArray[self.released_i][self.released_j] = 1
+                    self.middle_i = int((self.starting_i + self.released_i) / 2)
+                    self.middle_j = int((self.starting_j + self.released_j) / 2)
+                    canvas.delete(self.redguti[self.middle_i][self.middle_j])
+                    self.boardArray[self.middle_i][self.middle_j] = 0
+
+                    if isEatingMoveAvailable(self.released_i, self.released_j, self.move_arr, self.boardArray,
+                                             self.currentPlayer) == 0:
+                        self.currentPlayer = 2  # player now red
+                        self.eatingMove = (-1, -1)
+
+                # invalid move, move retained
+                else:
+                    canvas.delete(self.greenguti[self.starting_i][self.starting_j])
+                    self.greenguti[self.starting_i][self.starting_j] = canvas.create_image(old_x, old_y,
+                                                                                           image=self.greenGuti)
+            won = checkWinner(self.boardArray)
+            if won == 2:
+                print("Red Won!")
+            if won == 1:
+                print("Green Won!")
+            self.gate = 0
+
+        canvas.bind('<B1-Motion>', moveGuti)
+        canvas.bind('<ButtonRelease-1>', moveReleased)
 
 if __name__ == "__main__":
     app = SampleApp()

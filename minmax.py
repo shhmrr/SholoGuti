@@ -1,3 +1,6 @@
+from copy import deepcopy
+GREEN = 1
+RED = 2
 def distanceInSquare1(starting_j, starting_i, released_j, released_i):
     # x0,y0,x1,y1
     distInSqr = (starting_j - released_j) * (starting_j - released_j) + (starting_i - released_i) * (
@@ -63,14 +66,139 @@ def compute_move_arr():
                     arr[8 - i][j].append((8 - k[0], k[1]))
 
     return arr
+def checkWinner(boardArr):
+    ##to be used for deciding winner
+    redcount = 0
+    greencount = 0
+    for i in range(9):
+        for j in range(5):
+            if boardArr[i][j] == 2:  ##counting red/human guti
+                redcount += 1
+            if boardArr[i][j] == 1:  ##counting green/AI guti
+                greencount += 1
+    if redcount == 0:
+        print("Green Won")
+        return 1
+
+    if greencount == 0:
+        print("Red Won")
+        return 2
+    return 0
+#pass the board here
+def evaluate(boardArr):
+    redcount = 0
+    greencount = 0
+    for i in range(9):
+        for j in range(5):
+            if boardArr[i][j] == 2:  ##counting red/human guti
+                redcount += 1
+            if boardArr[i][j] == 1:  ##counting green/AI guti
+                greencount += 1
+    return greencount - redcount
+
+def get_all_pieces(board,color):
+    all_pieces = []
+    for i in range(9):
+        for j in range(5):
+            if board[i][j] == color:  ##counting red/human guti
+                  all_pieces.append((i,j))
+    return all_pieces
+
+def get_valid_moves(board,color,piece):
+    valid_moves = []
+    i = piece[0]
+    j = piece[1]
+    move_arrr = compute_move_arr()
+    for ii in range(9):
+        for jj in range(5):
+            distInSqr = distanceInSquare1(j, i, jj, ii)
+            ret = isValid16GutiMoveAI(move_arrr, j, i, jj, ii, distInSqr, board, color)
+            if ret == 1:
+                valid_moves.append((ii,jj,[]))
+            elif ret == 2:
+                step = []
+                step.append((int(i+ii)/2,int(j+jj)/2))
+                while ret == 2:
+                    for iii in range(9):
+                        for jjj in range(5):
+                            distInSqr = distanceInSquare1(jj, ii, jjj, iii)
+                            ret = isValid16GutiMoveAI(move_arrr, jj, ii, jjj, iii, distInSqr, board, color)
+                            if ret == 2:
+                                step.append((int(ii + iii) / 2, int(jj + jjj) / 2))
+                valid_moves.append((ii, jj,step))
+
+    print(valid_moves)
+    return valid_moves
+
+
+def simulate_move(piece, move, board, skip,color):
+    board[piece[0]][piece[1]] = 0
+    board[move[0]][move[1]] = color
+    #if skip:
+     #   board[int(skip[0])][int(skip[1])] = 0
+    for i in skip:
+
+        print(i)
+        row = int(i[0])
+        col =  int(i[1])
+        board[row][col] = 0
+
+    return board
+
+
+
+def get_all_moves(board, color):
+    moves = []
+    for piece in get_all_pieces(board,color):
+        valid_moves = get_valid_moves(board,color,piece)
+        print(valid_moves)
+        for i in valid_moves:
+            move = (i[0],i[1])
+            skip = i[2]
+            print(move)
+            temp_board = deepcopy(board)
+            print("qqqq")
+            print(skip)
+            new_board = simulate_move(piece,move,temp_board,skip,color)
+            moves.append(new_board)
+
+    return moves
+
+
+
+
+#position is the board object
+def minimax(board, depth,max_player):
+    if depth == 0 or  checkWinner(board):
+        return evaluate(board), board
+
+    if max_player:
+        maxEval =float('-inf')
+        best_move = None
+        for move in get_all_moves(board,GREEN):
+            evaluation = minimax(move,depth - 1,False)[0]
+            maxEval = max(maxEval,evaluation)
+            if maxEval == evaluation:
+                best_move = move
+        return maxEval, best_move
+    else:
+        minEval =float('inf')
+        best_move = None
+        for move in get_all_moves(board,RED):
+            evaluation = minimax(move,depth - 1,True)[0]
+            minEval = min(minEval,evaluation)
+            if minEval == evaluation:
+                best_move = move
+        return minEval, best_move
 
 class Minmax:
-    def __init__(self,boardarr,first_turn,new_i,new_j):
+    def __init__(self,boardarr):
         self.boardarr = boardarr
         self.move_arr = compute_move_arr()
-        self.first_turn = first_turn
-        self.new_i = new_i
-        self.new_j = new_j
+
+
+
+
     def boardArr(self):
         print()
         print()
@@ -80,45 +208,26 @@ class Minmax:
                   self.boardarr[i][3], " ", self.boardarr[i][4], " ", )
         print("qwe")
         print()
-        if self.first_turn:
-            for i in range(9):
-                for j in range(5):
-                    if self.boardarr[i][j] == 1: #is a green
-                        for ii in range(9):
-                            for jj in range(5):
 
-                                distInSqr = distanceInSquare1(j,i,jj,ii)
-                                ret = isValid16GutiMoveAI(self.move_arr, j, i, jj,ii, distInSqr, self.boardarr,1)
-                                if ret == 1:
-                                    self.boardarr[i][j] = 0
-                                    self.boardarr[ii][jj] = 1
-                                    return self.boardarr,ret,i,j,ii,jj
-                                if ret == 2:
-                                    print("first turn and two")
-                                    self.boardarr[i][j] = 0
-                                    midi = int((i+ii)/2)
-                                    midj = int((j+jj)/2)
-                                    self.boardarr[midi][midj] = 0
-                                    self.boardarr[ii][jj] = 1
-                                    return self.boardarr,ret,i,j,ii,jj
-
-        else:
-
-            for ii in range(9):
-                for jj in range(5):
-
-                    distInSqr = distanceInSquare1(self.new_j, self.new_i, jj, ii)
-                    ret = isValid16GutiMoveAI(self.move_arr, self.new_j, self.new_i, jj, ii, distInSqr, self.boardarr, 1)
-                    if ret == 1: #in a second turn last turn always has to be a eating turn
-                        #self.boardarr[self.new_i][self.new_j] = 0
-                        #self.boardarr[ii][jj] = 1
-                        return self.boardarr, ret, self.new_i, self.new_j, ii, jj
-                    if ret == 2:
-                        print("second turn and two")
-                        self.boardarr[self.new_i][self.new_j] = 0
-                        midi = int((self.new_i + ii) / 2)
-                        midj = int((self.new_j + jj) / 2)
-                        self.boardarr[midi][midj] = 0
-                        self.boardarr[ii][jj] = 1
-                        return self.boardarr, ret, self.new_i, self.new_j, ii, jj
-
+        #     for i in range(9):
+        #         for j in range(5):
+        #             if self.boardarr[i][j] == 1: #is a green
+        #                 for ii in range(9):
+        #                     for jj in range(5):
+        #
+        #                         distInSqr = distanceInSquare1(j,i,jj,ii)
+        #                         ret = isValid16GutiMoveAI(self.move_arr, j, i, jj,ii, distInSqr, self.boardarr,1)
+        #                         if ret == 1:
+        #                             self.boardarr[i][j] = 0
+        #                             self.boardarr[ii][jj] = 1
+        #                             return self.boardarr,ret,i,j,ii,jj
+        #                         if ret == 2:
+        #                             print("first turn and two")
+        #                             self.boardarr[i][j] = 0
+        #                             midi = int((i+ii)/2)
+        #                             midj = int((j+jj)/2)
+        #                             self.boardarr[midi][midj] = 0
+        #                             self.boardarr[ii][jj] = 1
+        #                             return self.boardarr,ret,i,j,ii,jj
+        value, self.boardarr = minimax(self.boardarr,3,True)
+        return self.boardarr
