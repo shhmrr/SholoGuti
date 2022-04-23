@@ -1,4 +1,6 @@
 from copy import deepcopy
+from enum import Flag
+from tkinter.messagebox import NO
 GREEN = 1
 RED = 2
 def distanceInSquare1(starting_j, starting_i, released_j, released_i):
@@ -104,7 +106,42 @@ def get_all_pieces(board,color):
                   all_pieces.append((i,j))
     return all_pieces
 
-def get_valid_moves(board,color,piece):
+def convert_to_tuple(board):
+    board2 = deepcopy(board)
+    for i in range(9):
+        board2[i] = tuple(board[i])
+    return tuple(board2)
+
+def eating_dfs(now_i, now_j, board, mymap, valid_moves, step, move_arrr, color):
+    # vyrevy
+    mymap[convert_to_tuple(board)] = True
+    # if I can't eat anything then add stuff in valid_moves
+    eat_one = False
+    for ii in range(9):
+        for jj in range(5):
+            distInSqr = distanceInSquare1(now_j, now_i, jj, ii)
+            ret = isValid16GutiMoveAI(move_arrr, now_j, now_i, jj, ii, distInSqr, board, color)
+            if ret == 2:
+                skip_i = int((now_i+ii)/2)
+                skip_j = int((now_j+jj)/2)
+                new_board = deepcopy(board)
+                new_board[now_i][now_j]  = 0
+                new_board[ii][jj] = color
+                new_board[skip_i][skip_j] = 0
+                
+                # if the new_board is not visited, go there
+                if (mymap.get(convert_to_tuple(new_board)) == None):
+                    eat_one = True
+                    step.append((skip_i, skip_j))
+                    eating_dfs(ii, jj, new_board, mymap, valid_moves, step, move_arrr, color)
+    
+    # can't eat anything ? -> last move in chain, add in valid_moves 
+    if eat_one == False:
+        valid_moves.append((now_i, now_j, deepcopy(step)))
+
+    step.pop()
+    
+def get_valid_moves(board, color,piece):
     valid_moves = []
     i = piece[0]
     j = piece[1]
@@ -117,15 +154,29 @@ def get_valid_moves(board,color,piece):
                 valid_moves.append((ii,jj,[]))
             elif ret == 2:
                 step = []
-                step.append((int(i+ii)/2,int(j+jj)/2))
+                skip_i = int((i+ii)/2)
+                skip_j = int((j+jj)/2)
+                step.append((skip_i, skip_j))
+                # how to do this
+                mymap = {}
+                mymap[convert_to_tuple(board)] = True
+                new_board = deepcopy(board)
+                new_board[i][j]  = 0
+                new_board[ii][jj] = color
+                new_board[skip_i][skip_j] = 0
+                eating_dfs(ii, jj, new_board, mymap, valid_moves, step, move_arrr, color)
+                
+
+                """
                 while ret == 2:
                     for iii in range(9):
                         for jjj in range(5):
                             distInSqr = distanceInSquare1(jj, ii, jjj, iii)
                             ret = isValid16GutiMoveAI(move_arrr, jj, ii, jjj, iii, distInSqr, board, color)
                             if ret == 2:
-                                step.append((int(ii + iii) / 2, int(jj + jjj) / 2))
-                valid_moves.append((ii, jj,step))
+                                step.append((int((ii + iii) / 2), int((jj + jjj) / 2)))
+                valid_moves.append((ii, jj, step))
+                """
 
     print(valid_moves)
     return valid_moves
@@ -151,7 +202,9 @@ def get_all_moves(board, color):
     moves = []
     for piece in get_all_pieces(board,color):
         valid_moves = get_valid_moves(board,color,piece)
+        print(piece)
         print(valid_moves)
+        print()
         for i in valid_moves:
             move = (i[0],i[1])
             skip = i[2]
